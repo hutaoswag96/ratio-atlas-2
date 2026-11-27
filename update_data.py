@@ -72,8 +72,8 @@ def weekly_last(daily, growth_dates):
     return out
 
 
-def snapshot(end):
-    dividend_daily = csindex_daily(DIVIDEND, START, end)
+def snapshot(end, since=None):
+    dividend_daily = csindex_daily(DIVIDEND, since or START, end)
     growth = tencent(GROWTH, end)
     dividend = weekly_last(dividend_daily, sorted(growth))
     rows = []
@@ -88,13 +88,22 @@ if __name__ == '__main__':
     # Use Friday's final data starting on Saturday (Shanghai time).
     today = dt.datetime.now(dt.timezone(dt.timedelta(hours=8))).date()
     end = today - dt.timedelta(days=(today.weekday()-5) % 7 + 1)
-    rows = snapshot(end.isoformat())
-    if len(rows) < 750 or (end - dt.date.fromisoformat(rows[-1][0])).days > 14:
-        raise ValueError('Incomplete weekly series')
+    old = []
     if TARGET.exists():
         old = json.loads(TARGET.read_text().split(' = ', 1)[1].rstrip(';\n'))
-        if not {r[0] for r in old}.issubset({r[0] for r in rows}):
-            raise ValueError('Refresh would discard previously verified weeks')
+    # Refresh the last few weeks only, so the index site sees one small request.
+    since = None
+    if len(old) > 750:
+        since = old[-8][0]
+    rows = snapshot(end.isoformat(), since)
+    if since:
+        merged = {r[0]: r for r in old}
+        merged.update({r[0]: r for r in rows})
+        rows = [merged[day] for day in sorted(merged)]
+    if len(rows) < 750 or (end - dt.date.fromisoformat(rows[-1][0])).days > 14:
+        raise ValueError('Incomplete weekly series')
+    if old and not {r[0] for r in old}.issubset({r[0] for r in rows}):
+        raise ValueError('Refresh would discard previously verified weeks')
     tmp = TARGET.with_suffix('.tmp')
     tmp.write_text('const weeklyData = ' + json.dumps(rows, separators=(',', ':')) + ';\n')
     tmp.replace(TARGET)

@@ -1,4 +1,4 @@
-"""红创比值 · 每周邮件推送内容生成。
+"""红创比 2.0 · 每周邮件推送内容生成。
 
 从「当前空仓」起点复现网站 engine.js 的单边五笔轮动信号，判断本周是否
 出现买入/卖出/持仓变化，生成邮件标题与正文到 push_mail.json。
@@ -117,7 +117,7 @@ def simulate(rows, bars, start, capital=CAPITAL):
 
 def projection(rows, bars, sim):
     """复现网站 renderProjection：区间距离 + 按近 60 日波动估算时间。"""
-    daily = load_array(DIST / 'daily-prices.js', 'dailyPriceSnapshot')
+    daily = load_array(DIST / 'daily-returns.js', 'dailyTotalReturns')
     if len(daily) < 61:
         return None
     last = daily[-1]
@@ -185,9 +185,9 @@ def build_subject(sim, new_trades, new_orders):
         order = new_orders[0]
         if order['kind'] == 'sell':
             act = '卖清' if order['part'] == 1 else '卖一半'
-            return f"红创比值周报：准备{act}{ASSETS[order['asset']]}"
-        return f"红创比值周报：准备买入{ASSETS[order['asset']]}"
-    return f"红创比值周报：{holding_text(sim)}"
+            return f"红创比 2.0 周报：准备{act}{ASSETS[order['asset']]}"
+        return f"红创比 2.0 周报：准备买入{ASSETS[order['asset']]}"
+    return f"红创比 2.0 周报：{holding_text(sim)}"
 
 
 def zone_text(ratio, bar):
@@ -254,8 +254,8 @@ def build_body(sim, proj, rows, new_trades, new_orders, start_date):
 
     return f'''<div style="font-family:-apple-system,PingFang SC,Arial,sans-serif;color:#17212f;line-height:1.6;max-width:640px;">
 {banner}
-<h2 style="font-size:20px;margin:20px 0 4px;">红创比值 · 每周跟踪</h2>
-<p style="color:#667085;font-size:13px;margin:0 0 12px;">中证红利 000922 / 创业板指 399006 · 单边五笔轮动</p>
+<h2 style="font-size:20px;margin:20px 0 4px;">红创比 2.0 · 每周跟踪</h2>
+<p style="color:#667085;font-size:13px;margin:0 0 12px;">中证红利全收益 H00922 / 创业板全收益 399606 · 单边五笔轮动</p>
 <h3 style="font-size:16px;margin:16px 0 4px;">本周状态</h3>
 {table}
 <h3 style="font-size:16px;margin:16px 0 4px;">情景推演</h3>
