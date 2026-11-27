@@ -1,0 +1,128 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f7f8f5" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#15181c" media="(prefers-color-scheme: dark)"><title>红创比 2.0 · 轮动执行台</title><link rel="icon" type="image/svg+xml" href="favicon.svg"><link rel="apple-touch-icon" href="favicon.png"><link rel="stylesheet" href="brief.css"><link rel="stylesheet" href="workspace.css"><script defer src="daily-returns.js"></script><script defer src="weekly.js"></script><script defer src="engine.js"></script><script defer src="trends.js"></script><script defer src="plan-performance.js"></script><script defer src="daily-prices.js"></script><script defer src="daily-close.js"></script><script defer src="execution.js"></script><script defer src="brief.js"></script></head><body>
+<header class="workspace-header">
+  <div class="mast">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m4 15 4-4 4 2 7-6M4 20h16M8 11v9m4-7v7m7-13v13"/></svg></span>
+      <span>红创比 2.0</span>
+    </a>
+    <nav aria-label="执行台导航">
+      <a href="#top" aria-current="location"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/></svg><span>本周判断</span></a>
+      <a href="#chart"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 4v16h16M7 15l4-4 3 2 5-6"/></svg><span>比值走势</span></a>
+      <a href="#plan"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="5" y="4" width="14" height="16" rx="2"/><path d="m8 9 1 1 2-2m2 2h3M8 15h8"/></svg><span>执行单</span></a>
+      <a href="#history"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 11a8 8 0 1 1 2 6M4 5v6h6m2-3v4l3 2"/></svg><span>历史复盘</span></a>
+      <a href="#funds"><svg aria-hidden="true" viewBox="0 0 24 24"><rect x="4" y="6" width="16" height="13" rx="2"/><path d="M4 10h16M8 15h3"/></svg><span>场外基金</span></a>
+    </nav>
+    <div class="sidebar-links"><a href="#rules">交易规则</a><a href="#data">行情与补录</a></div>
+  </div>
+  <div class="workspace-bar"><div class="workspace-bar-inner"><a href="#top">我的投资工作台</a><span aria-hidden="true">/</span><strong id="active-section">本周判断</strong></div></div>
+</header>
+<main id="top" class="wrap"><div class="intro"><div><p class="ey"><span>中证红利全收益 <code>H00922</code></span> <i>/</i> <span>创业板全收益 <code>399606</code></span></p><h1>红创比 2.0 · 轮动执行台</h1></div><div class="intro-side">
+  <div class="data-dates">
+    <a href="#data"><span>行情日收盘</span><strong id="daily-asof"></strong></a>
+    <a href="#data"><span>买卖依据周收盘</span><strong id="asof"></strong></a>
+  </div>
+  <p class="data-status" id="data-status" role="status" aria-live="polite"><b class="status-pill" id="status-pill"></b><span id="status-text"></span></p>
+</div></div>
+<section class="hero" aria-label="本周判断与比值">
+  <div class="call">
+    <div class="label" id="signalLabel"></div>
+    <h2 id="headline"></h2>
+    <p id="reason"></p>
+    <section id="projection" class="projection" aria-live="polite" aria-label="比值情景推演"></section>
+    <a class="cta" href="#plan">查看我的执行单</a>
+  </div>
+  <div class="quote">
+    <div class="quote-number"><span>最新日收盘比值</span><strong id="ratio"></strong><p id="daily-ratio-change"></p></div>
+    <div class="quote-mini"><svg id="quote-sparkline" viewBox="0 0 168 48" role="img" aria-label="最近 20 个交易日的收盘比值走势"></svg><span id="quote-sparkline-period"></span></div>
+    <div class="daily-observation" id="daily-observation"><strong></strong><span></span></div>
+    <div class="quote-context"><div class="quote-weekly"><b>周线交易参考</b><span id="weekly-ratio"></span></div>
+      <div class="track"><span aria-hidden="true"></span><b id="pointer"></b></div>
+      <div class="limits"><span id="lo"></span><span id="hi"></span></div>
+      <p id="average"></p>
+    </div>
+  </div>
+</section>
+<section class="sheet" id="chart"><div class="heading"><div><p class="ey">日收盘比值 · 周线模拟买卖</p><h2>比值走势与买卖点</h2></div><div class="segments" id="ranges"><button data-n="1">近一月</button><button data-n="12">近一年</button><button data-n="36">近三年</button><button data-n="0" aria-pressed="true">全历史</button></div></div>
+<div class="timeline">
+  <label class="year-control">查看年份 <select id="chart-year"><option value="">选择年份</option></select></label>
+  <div class="segments" id="chart-controls" aria-label="移动及缩放时间范围">
+    <button type="button" id="pan-back" aria-label="向更早日期移动" title="向更早日期移动">‹</button>
+    <button type="button" id="zoom-in" aria-label="放大时间范围" title="放大时间范围">＋</button>
+    <button type="button" id="zoom-out" aria-label="缩小时间范围" title="缩小时间范围">−</button>
+    <button type="button" id="pan-forward" aria-label="向更晚日期移动" title="向更晚日期移动">›</button>
+  </div>
+  <details id="chart-date-panel" open>
+    <summary>自选日期</summary>
+    <form id="chart-dates" aria-label="自选起止日期"><label>起始 <input type="date" id="chart-from" required></label><label>结束 <input type="date" id="chart-to" required></label><button>应用</button></form>
+  </details>
+</div>
+<div class="range-meta"><p id="chart-range-status" class="chart-range-status" role="status"></p><span class="hint-mouse">在图上拖选日期范围可放大</span><span class="hint-touch">双指缩放 · 单指拖动 · 轻点选日</span></div>
+<div class="legend"><span class="ratio-key">━ 日收盘比值</span><span class="ratio-key">◇ 所选交易日</span><span class="red">● 买红利</span><span class="blue">● 买创业板</span><span class="sell-key">▽ 卖一半</span><span class="sell-key">▼ 卖清</span><span>┄ 年度观察线</span></div><div class="plot-frame"><svg id="plot" role="img" aria-label="中证红利全收益除以创业板全收益的日收盘比值、年度观察线及周线模拟买卖点"></svg><div id="ratio-selection" class="chart-selection" hidden></div><output id="plot-tip" aria-hidden="true" hidden></output></div><div class="scrub"><label for="cursor">查看交易日</label><input type="range" id="cursor"><output id="readout" for="cursor"></output></div><ul id="trade-readout" hidden aria-label="所选交易日的模拟成交"></ul><section class="index-panel" aria-labelledby="index-heading">
+  <div class="index-title"><h3 id="index-heading">两只指数走势</h3><p>同一时间窗口，首个交易日收盘均设为 100</p></div>
+  <div class="legend"><span class="red">━ 中证红利全收益 H00922</span><span class="blue">┄ 创业板全收益 399606</span></div>
+  <div class="plot-frame"><svg id="index-plot" role="img" aria-label="中证红利全收益与创业板全收益的日收盘走势，按当前区间首日点位归一至 100"></svg><div id="index-selection" class="chart-selection" hidden></div><output id="index-tip" aria-hidden="true" hidden></output></div>
+  <p class="meta index-readout" id="index-readout"></p>
+</section>
+<section class="index-panel linked-returns" id="linked-performance" aria-labelledby="linked-returns-heading">
+  <div class="index-title"><h3 id="linked-returns-heading">策略收益与回撤</h3>
+    <label class="performance-scope">账户 <select id="performance-scope"><option value="full">完整策略</option><option value="plan">执行单模拟</option></select></label>
+  </div>
+  <p class="meta" id="linked-return-context"></p>
+  <div class="linked-risk-stats">
+    <div><span>区间累计收益</span><strong id="linked-return-period"></strong></div>
+    <div><span>区间最大回撤</span><strong id="linked-worst-draw"></strong></div>
+  </div>
+  <p class="meta" id="linked-draw-dates"></p>
+  <div class="legend"><span class="return-key">━ 日度累计收益</span><span class="draw-key">━ 日度回撤</span></div>
+  <div class="plot-frame"><svg id="linked-return-plot" role="img" aria-label="与比值和指数同范围的策略日度收益和回撤曲线"></svg></div>
+  <div class="scrub daily-scrub"><label for="linked-day">查看交易日</label><input id="linked-day" type="range">
+   <output class="index-readout" id="linked-return-readout" for="linked-day"></output>
+  </div>
+</section>
+<details><summary>为什么观察线会移动？</summary><p>每年年初，把 2011 年起到上年底的每周比值从小到大排列，取 20% 和 80% 两处作为观察线，全年固定。回测首年使用启动前 156 条周线。日收盘比值用于观察，周收盘入区并满足确认条件后，按执行单分笔操作。圆点和倒三角是周线策略的模拟买入和卖出。选中卖清并换仓的成交日，下方会分行显示先卖后买。</p></details></section>
+<section class="sheet" id="plan">
+ <div class="heading"><h2>本轮执行单</h2><a class="plan-history-link" href="#linked-performance" data-performance="full">收益与回撤</a></div>
+ <div id="planBody" aria-live="polite"></div>
+ <div id="plan-evidence" class="evidence-block" aria-live="polite"></div>
+ <details id="plan-settings">
+  <summary><strong>调整设置</strong><span id="plan-setup-summary"></span></summary>
+  <div class="form plan-form">
+   <label>执行依据<select id="basis"><option value="model">按起点模拟</option><option value="actual">按实际持仓核对</option></select></label>
+   <label><span id="fundLabel">初始资金（元）</span><input id="capital" type="number" min="1" max="100000000000" step="any" value="10000"></label>
+   <fieldset class="start-picker">
+    <legend>开始观察</legend>
+    <label>年份<select id="start-year"></select></label>
+    <label>月份<select id="start-month"></select></label>
+    <label>周收盘日<select id="start"></select></label>
+   </fieldset>
+  </div>
+  <div id="actualFields" hidden><div class="form">
+   <label>实际持仓<select id="holding"><option value="">现金</option><option value="0">中证红利</option><option value="1">创业板指</option></select></label>
+   <div id="position-fields">
+    <label>本轮已买笔数<select id="filled"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+    <label>最近一次买入日<input type="date" id="lastFill"></label>
+    <label>换仓进度
+     <select id="sold">
+      <option value="none">旧仓未动</option>
+      <option value="half">已赎回一半，剩余未动</option>
+      <option value="cleared">已全部赎回，款项在途或已到账</option>
+      <option value="pending">已申购，等待份额确认</option>
+     </select>
+    </label>
+   </div>
+  </div></div>
+  <p class="meta" id="planHelp"></p>
+ </details>
+ <div id="plan-return"></div><div id="plan-lots"></div>
+</section>
+<section class="sheet" id="history"><div class="heading"><div><p class="ey">从 1 万元起步 · 含分红再投入</p><h2>历史操作记录</h2></div></div><div id="stats"></div><p class="history-curve-link"><a href="#linked-performance" data-performance="all">查看完整策略的收益与回撤</a></p><div class="table-tools"><p class="meta">每轮订单含买入与卖出，按时间从近到远</p><label>资产 <select id="asset-filter"><option value="">全部资产</option><option value="0">中证红利</option><option value="1">创业板指</option></select></label></div><div id="orders"></div><p class="meta float-summary" id="float-summary"></p><p class="meta">信号后下一共同交易周收盘成交，买卖单边各计 0.10%，现金零息。年化与期末市值以完整周线为准，日度回撤以已载入的收盘数据计算。历史模拟尚未计入基金管理费及额外滑点。</p></section>
+<details class="sheet" id="funds">
+ <summary>对应的场外指数基金</summary>
+ <div id="fund-list" class="fund-list"></div>
+ <p class="meta">可在基金销售平台搜索基金代码。下方列出跟踪对应指数的场外 ETF 联接基金，包含基金代码与目标 ETF，供你核对；具体申购状态以销售平台为准。</p>
+</details>
+<details class="sheet guide" id="rules"><summary>交易规则</summary><ol class="rules"><li><b>每日看比值，周末看信号</b>日收盘低过下线关注红利，高过上线关注创业板，碰到线也算。交易观察期从有效的周收盘入区开始计算。</li><li><b>再等它相对转强</b>最近一次仍处于观察区起，含当周最多观察 13 周。红利要等比值高于近 13 周平均数；创业板要等比值低于平均数。先到另一端就改看另一边。</li><li><b>一轮的钱分五份</b>空仓确认后下周收盘买第一份。每笔成交满 28 天后的首个周收盘发出加仓信号，再下一周收盘买一份。同向无需重新触线。</li><li><b>换边时分两次卖</b>对侧确认后，下周收盘卖旧仓一半，再下一周收盘卖清，同时用新一轮资金的 20% 买另一边。</li></ol></details>
+<details id="data" class="sheet"><summary>行情日期与周线补录</summary>
+<p id="daily-detail" class="daily-detail" role="status"></p>
+<p>日收盘与周线都是本地数据快照：中证红利全收益 H00922 与创业板全收益 399606，由数据脚本更新，页面不联网拉行情。首页和日线图显示快照里最新的共同收盘。顶部状态条标明当前判断依据的周线日期，以及这条指令适用的交易周；该周收盘后仍未补录，状态会改为「待补录」。执行单、观察期和 13 周均线使用完整交易周的共同收盘，按下方方式补录。</p><p>内置数据取自两只全收益指数的共同周收盘：中证红利全收益 H00922 与创业板全收益 399606，两者都已把分红再投计入。补录每个已结束交易周的两个收盘点位，可在本机重新计算图表、执行单与回测。请按时间顺序录入，遇节假日选当周最后一个交易日。</p><form id="append"><div class="form"><label>交易周末日期<input type="date" required id="newDay"></label><label>红利全收益 H00922<input required type="number" min=".01" step="any" id="p0"></label><label>创业板全收益 399606<input required type="number" min=".01" step="any" id="p1"></label></div><button class="button">保存本周数据</button> <button type="button" id="undo">撤回最后一次补录</button></form><p id="notice" role="status"></p></details>
+<footer>红创比 2.0 <span>中证红利全收益 / 创业板全收益 · 单边轮动</span></footer></main></body></html>
