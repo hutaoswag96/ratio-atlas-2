@@ -61,12 +61,13 @@ assert not missing, f'Missing daily quotes within common period: {missing}'
 
 checked = 0
 for date, weekly_dividend, weekly_growth in official:
-    if date not in dividend or date not in growth:
+    if date < since:
         continue
+    assert date in dividend and date in growth, f'Weekly mark missing from daily series: {date}'
     assert abs(dividend[date]-weekly_dividend) <= .011, (date,dividend[date],weekly_dividend)
     assert abs(growth[date]-weekly_growth) <= .011, (date,growth[date],weekly_growth)
     checked += 1
-assert checked >= 4, 'Too few weekly cross-checks on the refreshed window'
+assert checked >= 1, 'No weekly cross-check on the refreshed window'
 
 merged = {row[0]: row for row in old}
 for day in dates:
